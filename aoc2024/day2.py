@@ -67,14 +67,13 @@ class Day(BaseDay):
         return 1 < abs_difference < 3
 
     def _process_report_fault(self, report: list[int]) -> bool:
-        reports = [report]
+        if self._process_report(report, no_faults=False):
+            return True
 
         for i in range(len(report)):
-            reports.append([*report[:i], *report[i + 1 :]])
-
-        for subreport in reports:
-            if self._process_report(subreport, no_faults=False):
+            if self._process_report([*report[:i], *report[i + 1 :]], no_faults=False):
                 return True
+
         return False
 
 
