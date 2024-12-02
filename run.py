@@ -12,7 +12,7 @@ class Error(Exception):
 
 def _import_day(year: int, day: int) -> ModuleType:
     package_name = f"aoc{year}"
-    module_name = f"d{day}"
+    module_name = f"day{day}"
 
     try:
         module = importlib.import_module(f"{package_name}.{module_name}")
