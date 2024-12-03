@@ -2,19 +2,19 @@ from pathlib import Path
 
 
 class BaseDay:
-    __data_path__: Path | str = ...
+    def __init__(self, data: tuple[Path | None, Path | None]):
+        self.data: list[str] = self.read_data(data[0])
+        self.test_data: list[str] = self.read_data(data[1])
 
-    def __init__(self):
-        self.data: list[str] = self.read_data()
-
-    def read_data(self) -> list[str]:
-        with open(self.__data_path__, "r") as file:
+    @staticmethod
+    def read_data(data_path: Path | str) -> list[str]:
+        with open(data_path, "r") as file:
             data = file.readlines()
 
         return [line.strip() for line in data]
 
-    def part1(self) -> int:
+    def part1(self, data: list[str]) -> int:
         pass
 
-    def part2(self) -> int:
+    def part2(self, data: list[str]) -> int:
         pass

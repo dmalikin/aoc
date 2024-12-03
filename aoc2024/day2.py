@@ -1,23 +1,29 @@
-from pathlib import Path
-
 from base.day import BaseDay
-
-DATA_DIR = Path(__file__).parent / "data"
 
 
 class Day(BaseDay):
-    """
-    1: 591
-    2: 621
-    """
+    @staticmethod
+    def split_lines(data: list[str]) -> list[list[int]]:
+        result = []
+        for line in data:
+            result.append(list(map(int, line.split())))
+        return result
 
-    __data_path__ = DATA_DIR / "day2.txt"
+    def part1(self, data: list[str]) -> int:
+        return self._run_part(data=data)
 
-    def part1(self) -> int:
-        return self._run_part(no_faults=False)
+    def _run_part(self, data: list[str]) -> int:
+        reports = self.split_lines(data)
 
-    def part2(self) -> int:
-        reports = self.split_lines()
+        result = 0
+        for report in reports:
+            r = self._process_report(report)
+            result += r
+
+        return result
+
+    def part2(self, data: list[str]) -> int:
+        reports = self.split_lines(data)
 
         result = 0
         for report in reports:
@@ -25,23 +31,7 @@ class Day(BaseDay):
 
         return result
 
-    def split_lines(self) -> list[list[int]]:
-        result = []
-        for line in self.data:
-            result.append(list(map(int, line.split())))
-        return result
-
-    def _run_part(self, no_faults: bool = False) -> int:
-        reports = self.split_lines()
-
-        result = 0
-        for report in reports:
-            r = self._process_report(report, no_faults=no_faults)
-            result += r
-
-        return result
-
-    def _process_report(self, report: list[int], no_faults: bool = False) -> bool:
+    def _process_report(self, report: list[int]) -> bool:
         previous = report[0]
         increase = None
 
@@ -53,7 +43,7 @@ class Day(BaseDay):
                 return False
 
             if increase is not None:
-                if (increase > 0 and difference < 0) or (increase < 0 and difference > 0):
+                if (increase > 0 > difference) or (increase < 0 < difference):
                     return False
 
             increase = difference
@@ -61,26 +51,18 @@ class Day(BaseDay):
 
         return True
 
-    def _compare(self, left: int, right: int) -> bool:
+    @staticmethod
+    def _compare(left: int, right: int) -> bool:
         difference = right - left
         abs_difference = abs(difference)
         return 1 < abs_difference < 3
 
     def _process_report_fault(self, report: list[int]) -> bool:
-        if self._process_report(report, no_faults=False):
+        if self._process_report(report):
             return True
 
         for i in range(len(report)):
-            if self._process_report([*report[:i], *report[i + 1 :]], no_faults=False):
+            if self._process_report([*report[:i], *report[i + 1 :]]):
                 return True
 
         return False
-
-
-class TestDay(Day):
-    """
-    1: 2
-    2: 4
-    """
-
-    __data_path__ = DATA_DIR / "day2-test.txt"

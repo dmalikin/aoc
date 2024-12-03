@@ -1,5 +1,6 @@
 import argparse
 import importlib
+from pathlib import Path
 from types import ModuleType
 
 from base.day import BaseDay
@@ -22,25 +23,36 @@ def _import_day(year: int, day: int) -> ModuleType:
     return module
 
 
-def _get_day(module: ModuleType, test: bool) -> BaseDay:
-    if test:
-        day = module.TestDay()
-    else:
-        day = module.Day()
+def _get_data(year: int, day: int) -> tuple[Path | None, Path | None]:
+    folder: Path = Path(f"aoc{year}") / "data"
+    file_path: Path = folder / f"day{day}.txt"
+    test_file_path: Path = folder / f"day{day}-test.txt"
+    return (
+        file_path if file_path.exists() else None,
+        test_file_path if test_file_path.exists() else None,
+    )
 
-    return day
+
+def _get_day(
+    module: ModuleType,
+    data: tuple[Path | None, Path | None],
+) -> BaseDay:
+    return module.Day(data)
 
 
 def run(year: int, day: int, test: bool = False):
-    module = _import_day(year=year, day=day)
+    module: ModuleType = _import_day(year=year, day=day)
+    data: tuple[Path | None, Path | None] = _get_data(year=year, day=day)
 
     print(f"Initializing Year {year}, Day {day} {'[TEST]' if test else ''} ...")
-    day = _get_day(module, test=test)
+    day: BaseDay = _get_day(module=module, data=data)
 
-    part1_result = day.part1()
+    day_data: list[str] = day.data if not test else day.test_data
+
+    part1_result = day.part1(day_data)
     print(f"Part 1 result: {part1_result}")
 
-    part2_result = day.part2()
+    part2_result = day.part2(day_data)
     print(f"Part 2 result: {part2_result}")
 
 

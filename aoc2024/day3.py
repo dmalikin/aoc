@@ -1,28 +1,24 @@
 import re
-from pathlib import Path
 
 from base.day import BaseDay
 
-DATA_DIR = Path(__file__).parent / "data"
-
 
 class Day(BaseDay):
-    __data_path__ = DATA_DIR / "day3.txt"
+    @staticmethod
+    def merge_lines(data: list[str]) -> str:
+        return "".join(data)
 
-    def merge_lines(self) -> str:
-        return "".join(self.data)
-
-    def part1(self) -> int:
+    def part1(self, data: list[str]) -> int:
         regex: str = "mul\((?P<n1>\d+),(?P<n2>\d+)\)"
-        return self._part(regex, switch=False)
+        return self._part(data, regex, switch=False)
 
-    def part2(self) -> int:
+    def part2(self, data: list[str]) -> int:
         regex: str = "mul\((?P<n1>\d+),(?P<n2>\d+)\)|(?P<on>do\(\))|(?P<off>don't\(\))"
-        return self._part(regex, switch=True)
+        return self._part(data, regex, switch=True)
 
-    def _part(self, regex: str, switch: bool = False) -> int:
+    def _part(self, data: list[str], regex: str, switch: bool = False) -> int:
         pattern: re.Pattern = re.compile(regex)
-        data: str = self.merge_lines()
+        data: str = self.merge_lines(data)
 
         result: int = 0
         mul_on: bool = True
@@ -41,14 +37,14 @@ class Day(BaseDay):
 
         return result
 
-    def part1_no_regex(self):
-        return self._part_no_regex(switch=False)
+    def part1_no_regex(self, data: list[str]):
+        return self._part_no_regex(data, switch=False)
 
-    def part2_no_regex(self):
-        return self._part_no_regex(switch=True)
+    def part2_no_regex(self, data: list[str]):
+        return self._part_no_regex(data, switch=True)
 
-    def _part_no_regex(self, switch: bool = False):
-        data: str = self.merge_lines()
+    def _part_no_regex(self, data: list[str], switch: bool = False):
+        data: str = self.merge_lines(data)
         start: str = "mul("
         do: str = "do()"
         dont: str = "don't()"
@@ -103,36 +99,3 @@ class Day(BaseDay):
                 i += 1
 
         return result
-
-
-class TestDay(Day):
-    __data_path__ = DATA_DIR / "day3-test.txt"
-
-
-if __name__ == "__main__":
-    day = Day()
-    test_day = TestDay()
-
-    part1_test_result = test_day.part1()
-    print(f"{part1_test_result=}")
-
-    part2_test_result = test_day.part2()
-    print(f"{part2_test_result=}")
-
-    part1_result = day.part1()
-    print(f"{part1_result=}")
-
-    part2_result = day.part2()
-    print(f"{part2_result=}")
-
-    part1_test_result_no_regex = test_day.part1_no_regex()
-    print(f"{part1_test_result_no_regex=}")
-
-    part2_test_result_no_regex = test_day.part2_no_regex()
-    print(f"{part2_test_result_no_regex=}")
-
-    part1_result_no_regex = day.part1_no_regex()
-    print(f"{part1_result_no_regex=}")
-
-    part2_result_no_regex = day.part2_no_regex()
-    print(f"{part2_result_no_regex=}")
