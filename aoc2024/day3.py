@@ -57,7 +57,7 @@ class Day(BaseDay):
         i: int = 0
         mul_on: bool = True
         while i < len(data):
-            if data[i] == "m" and data[i : i + 4] == start:
+            if mul_on and data[i] == "m" and data[i : i + 4] == start:
                 shift: int = 4
                 j: int = i + 4
                 q: list[str] = []
@@ -69,8 +69,7 @@ class Day(BaseDay):
                         pair.append(int("".join(q)))
 
                         if len(pair) == 2:
-                            if mul_on:
-                                result += pair[0] * pair[1]
+                            result += pair[0] * pair[1]
                             i += shift + 1
                             break
 
